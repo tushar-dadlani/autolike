@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" 
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/Visualize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="10dp"
+        android:text="@string/Visualize" 
+        android:onClick="switchtoVisualize"/>
+    
+    <Button
+        android:id="@+id/Control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+		android:layout_margin="10dp"
+        android:text="@string/Control"  
+        android:onClick="switchtoControl"/>
+
+</LinearLayout>
