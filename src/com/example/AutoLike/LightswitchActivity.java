@@ -1,4 +1,4 @@
-package com.example.OpenWave;
+package com.example.AutoLike;
 
 
 

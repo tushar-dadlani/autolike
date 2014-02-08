@@ -17,15 +17,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme" android:hardwareAccelerated="false">
         <activity
-            android:name="com.example.OpenWave.Visualizer"
+            android:name="com.example.AutoLike.Visualizer"
             android:label="@string/Visualizer" >
         </activity>
         <activity
-            android:name="com.example.OpenWave.LightswitchActivity"
+            android:name="com.example.AutoLike.LightswitchActivity"
             android:label="@string/title_activity_lightswitch" >
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.AutoLike.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
