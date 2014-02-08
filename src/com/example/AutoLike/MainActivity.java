@@ -1,27 +1,25 @@
 package com.example.AutoLike;
 
-import com.example.OpenWave.R;
-import com.neurosky.thinkgear.TGDevice;
-
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
+import com.neurosky.thinkgear.TGDevice;
 
+public class MainActivity extends FragmentActivity {
+	private MainFragment mainFragment; 
 
 	TGDevice tgDevice;
 	BluetoothAdapter bluetoothAdapter;
@@ -34,7 +32,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		//setContentView(R.layout.activity_main);
 
 
 		// Connect the device Via Bluetooth
@@ -52,8 +50,51 @@ public class MainActivity extends Activity {
 		}	
 
 
+		if (savedInstanceState == null) {
+	        // Add the fragment on initial activity setup
+	        mainFragment = new MainFragment();
+	        getSupportFragmentManager()
+	        .beginTransaction()
+	        .add(android.R.id.content, mainFragment)
+	        .commit();
+	    } else {
+	        // Or set the fragment from restored state info
+	        mainFragment = (MainFragment) getSupportFragmentManager()
+	        .findFragmentById(android.R.id.content);
+	    }
 
+		
+		Session.openActiveSession(this, true, new Session.StatusCallback() {
+
+		      // callback when session changes state
+		      @Override
+		      public void call(Session session, SessionState state, Exception exception) {
+		        if (session.isOpened()) {
+
+		          // make request to the /me API
+		          Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+
+		            // callback after Graph API response with user object
+		            @Override
+		            public void onCompleted(GraphUser user, Response response) {
+		              if (user != null) {
+		           //     TextView welcome = (TextView) findViewById(R.id.welcome);
+		          //      welcome.setText("Hello " + user.getName() + "!");
+		            	  Log.v("Logged In", user.getName());
+		              }
+		            }
+		          });
+		        }
+		      }
+		    });
+		
 	}
+	
+	  @Override
+	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	      super.onActivityResult(requestCode, resultCode, data);
+	      Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+	  }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
