@@ -116,11 +116,11 @@ public class MainActivity extends FragmentActivity {
 			try{
 				switch (msg.what) {
 				case TGDevice.MSG_MEDITATION:
-					recorder.recordReading(ReadingRecorder.MEDITATION, msg.arg1, 1);
+					recorder.recordReading(IReadingRecorder.MEDITATION, msg.arg1, 1);
 					Log.v("Meditation",Integer.toString(msg.arg1));
 					break;
 				case TGDevice.MSG_ATTENTION:
-					recorder.recordReading(ReadingRecorder.ATTENTION, msg.arg1, 1);
+					recorder.recordReading(IReadingRecorder.ATTENTION, msg.arg1, 1);
 					Log.v("Attention",Integer.toString(msg.arg1));
 					target = msg.arg1;
 					break;
