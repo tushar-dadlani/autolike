@@ -13,6 +13,9 @@ import com.facebook.SessionState;
 public class MainFragment extends Fragment {
 	
 	String TAG="MainFragment";
+	
+	
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, 
@@ -22,7 +25,7 @@ public class MainFragment extends Fragment {
 
 	    return view;
 	}
-	
+		
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
 	        Log.i(TAG, "Logged in...");

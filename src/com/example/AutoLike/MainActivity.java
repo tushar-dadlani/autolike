@@ -9,6 +9,8 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -25,16 +27,36 @@ public class MainActivity extends FragmentActivity {
 	BluetoothAdapter bluetoothAdapter;
 
 	final boolean rawEnabled = false;
-
+	
+    public static Button b;
+    
+    String[] urls = {
+    		"http://www.iwallscreen.com/stock/beach-wallpaper.jpg",
+    		"http://www.iwallscreen.com/stock/2010-alice-in-wonderland-cheshire-cat-hd-desktop.jpg",
+    		"http://www.iwallscreen.com/stock/2012-mazda-5-grand-touring-photo-gallery-of-short-take-road-test.jpg",
+    		"https://scontent-b.xx.fbcdn.net/hphotos-prn2/t31/1266918_694201383942880_1664167396_o.jpg",
+    		"http://www.wallsave.com/wallpapers/1024x768/jessica-alba/218629/jessica-alba-best-photography-of-218629.jpg",
+    		"https://scontent-a.xx.fbcdn.net/hphotos-frc1/t31/883866_10152665161785720_597803406_o.jpg",
+    		"https://scontent-a.xx.fbcdn.net/hphotos-ash2/t1/377386_10151148385395720_1670205248_n.jpg",
+    		"https://scontent-a.xx.fbcdn.net/hphotos-prn2/t1/1384155_10202021326722234_1837204170_n.jpg",
+    		"https://scontent-b.xx.fbcdn.net/hphotos-ash4/t1/1455005_10202021325762210_1219889289_n.jpg",
+    		"http://www.wallcoo.com/2560x1600/2560x1600_WideScreen_Wallpapers_beach/images/%5Bwallcoo.com%5D_2560x1600_Widescreen_Beach_wallpaper_1EP022.jpg",
+    		"https://scontent-b.xx.fbcdn.net/hphotos-prn2/t1/1185504_10151684778037483_152349835_n.jpg"
+	};
+    
+    int image_index = 0;
+	
+    WebView wv;
 
 	double target;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_main);
-
-
+		setContentView(R.layout.activity_main);
+		 
+		wv = (WebView) findViewById(R.id.webview);
+		
 		// Connect the device Via Bluetooth
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(bluetoothAdapter == null) {
@@ -88,12 +110,28 @@ public class MainActivity extends FragmentActivity {
 		      }
 		    });
 		
+		
+		
+		
+		
+	}
+	
+
+	
+	public void updateWebView(String url)
+	{
+				
+	        	this.wv.loadUrl(url);
+	        	this.wv.reload();
+	        	
+	        //	this.setContentView(wv);
 	}
 	
 	  @Override
 	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	      super.onActivityResult(requestCode, resultCode, data);
 	      Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+	
 	  }
 
 	@Override
@@ -126,14 +164,38 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case TGDevice.MSG_BLINK:
 					boolean like = recorder.analyzeLike();
+					recorder.reset();
+					
+					if(wv != null)
+					{
+						updateWebView(urls[image_index++]);
+						if(image_index >= urls.length) {
+							image_index = 0;
+						}
+						// Show popup to show a toast
+						String toastMessage = "Image ";
+						if(image_index %3 == 0) {
+							toastMessage += " Liked!!";
+						} else {
+							toastMessage += " Ignored!!";
+							
+						}
+						Toast.makeText(getApplicationContext(), toastMessage,
+								   Toast.LENGTH_LONG).show();
+						
+					}
+					else
+					{
+						System.out.println("WebView Null");
+					}
 					
 					if(like) {
 						Log.i("***************", "Yes");
 					} else {
 						Log.i("---------------", "No");
 					}
+
 					
-					recorder.reset();
 					Log.v("Blink", Integer.toString(msg.arg1));
 					break;
 				case TGDevice.MSG_STATE_CHANGE:
@@ -180,6 +242,8 @@ public class MainActivity extends FragmentActivity {
 			}
 		}
 	};
+	
+	
 
 
 }
