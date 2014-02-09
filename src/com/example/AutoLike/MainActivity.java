@@ -109,64 +109,75 @@ public class MainActivity extends FragmentActivity {
 		super.onDestroy();
 	}
 
-
 	final Handler handler = new Handler() {
 		@SuppressLint("NewApi") @Override
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case TGDevice.MSG_MEDITATION:
-				Log.v("Meditation",Integer.toString(msg.arg1));
-				break;
-			case TGDevice.MSG_ATTENTION:
-				Log.v("Attention",Integer.toString(msg.arg1));
-				target = msg.arg1;
-				break;
-			case TGDevice.MSG_BLINK:
-				Log.v("Blink", Integer.toString(msg.arg1));
-				break;
-			case TGDevice.MSG_STATE_CHANGE:
-				switch (msg.arg1) {
-				case TGDevice.STATE_IDLE:
-					Log.v("Status", "Idle");
+			IReadingRecorder recorder = ReadingRecorder.getInstance();
+			try{
+				switch (msg.what) {
+				case TGDevice.MSG_MEDITATION:
+					recorder.recordReading(ReadingRecorder.MEDITATION, msg.arg1, 1);
+					Log.v("Meditation",Integer.toString(msg.arg1));
 					break;
-				case TGDevice.STATE_CONNECTING:		                	
-					Log.v("Status", "Connecting...");
-					break;		                    
-				case TGDevice.STATE_CONNECTED:
-					Log.v("Status", "Connected.");
-					tgDevice.start();
+				case TGDevice.MSG_ATTENTION:
+					recorder.recordReading(ReadingRecorder.ATTENTION, msg.arg1, 1);
+					Log.v("Attention",Integer.toString(msg.arg1));
+					target = msg.arg1;
 					break;
-				case TGDevice.STATE_NOT_FOUND:
-					Log.v("Status", "Can't find");
+				case TGDevice.MSG_BLINK:
+					boolean like = recorder.analyzeLike();
+					
+					if(like) {
+						Log.i("***************", "Yes");
+					} else {
+						Log.i("---------------", "No");
+					}
+					
+					recorder.reset();
+					Log.v("Blink", Integer.toString(msg.arg1));
 					break;
-				case TGDevice.STATE_NOT_PAIRED:
-					Log.v("Status", "not paired");
+				case TGDevice.MSG_STATE_CHANGE:
+					switch (msg.arg1) {
+					case TGDevice.STATE_IDLE:
+						Log.v("Status", "Idle");
+						break;
+					case TGDevice.STATE_CONNECTING:		                	
+						Log.v("Status", "Connecting...");
+						break;		                    
+					case TGDevice.STATE_CONNECTED:
+						Log.v("Status", "Connected.");
+						tgDevice.start();
+						break;
+					case TGDevice.STATE_NOT_FOUND:
+						Log.v("Status", "Can't find");
+						break;
+					case TGDevice.STATE_NOT_PAIRED:
+						Log.v("Status", "not paired");
+						break;
+					case TGDevice.STATE_DISCONNECTED:
+						Log.v("Status", "Disconnected mang");
+					}
 					break;
-				case TGDevice.STATE_DISCONNECTED:
-					Log.v("Status", "Disconnected mang");
+
+
+				case TGDevice.MSG_POOR_SIGNAL:
+					//Log.v("Control", "PoorSignal: " + msg.arg1); 
+					break;
+				case TGDevice.MSG_RAW_DATA:
+					//int rawValue = msg.arg1;
+					//Log.v("RAW",Integer.toString(rawValue));
+					break;
+				case TGDevice.MSG_EEG_POWER:
+					//int ep = msg.arg1;
+					//Log.v("HelloEEG", "Delta: " + Integer.toString(ep));
+					break;
+
+				default:
+					break; 
 				}
-				break;
-
-
-			case TGDevice.MSG_POOR_SIGNAL:
-				Log.v("Control", "PoorSignal: " + msg.arg1); 
-				break;
-			case TGDevice.MSG_RAW_DATA:
-				int rawValue = msg.arg1;
-				Log.v("RAW",Integer.toString(rawValue));
-				break;
-			case TGDevice.MSG_EEG_POWER:
-				int ep = msg.arg1;
-				Log.v("HelloEEG", "Delta: " + Integer.toString(ep));
-				break;
-
-			default:
-				break; 
+			} catch(Exception e) {
+				Log.e("Error in handleMessage", "Error details are:: ", e);
 			}
-
-
-
-
 		}
 	};
 
